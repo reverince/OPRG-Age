@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Welcome to Firebase Hosting</title>
+    <title>ORPG Age! - 던전월드</title>
 
     <!-- update the version number as needed -->
     <script defer src="/__/firebase/5.7.2/firebase-app.js"></script>
@@ -27,7 +27,10 @@
             <div class="panel-body">
               <a href="/"><h1>OPRG Age!</h1></a>
               <h2>던전월드</h2>
-              <hr />
+            </div>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-body">
               <form class="form">
                 <div class="form-group">
                   <label for="name">이름</label>
@@ -56,26 +59,26 @@
                 </div>
                 <div class="form-group">
                   <label for="class">직업</label>
-                  <select class="form-control" id="class" required>
-                    <option value="" selected disabled>직업을 선택하세요!</option>
-                    <option>도적</option>
-                    <option>드루이드</option>
-                    <option>마법사</option>
-                    <option>사냥꾼</option>
-                    <option>사제</option>
-                    <option>성기사</option>
-                    <option>음유시인</option>
-                    <option>전사</option>
+                  <select class="form-control" id="class" required onchange="updateRace()">
+                    <option selected disabled>직업을 선택하세요!</option>
+                    <option value="thief">도적</option>
+                    <option value="druid">드루이드</option>
+                    <option value="wizard">마법사</option>
+                    <option value="ranger">사냥꾼</option>
+                    <option value="cleric">사제</option>
+                    <option value="paladin">성기사</option>
+                    <option value="bard">음유시인</option>
+                    <option value="fighter">전사</option>
                   </select>
                 </div>
                 <div class="form-group">
                   <label for="class">종족</label>
                   <select class="form-control" id="race" required>
-                    <option value="" selected disabled>종족을 선택하세요!</option>
-                    <option>드워프</option>
-                    <option>엘프</option>
-                    <option>인간</option>
-                    <option>하플링</option>
+                    <option selected disabled>종족을 선택하세요!</option>
+                    <option value="elf">엘프</option>
+                    <option value="human">인간</option>
+                    <option value="halfling">하플링</option>
+                    <option value="dwarf">드워프</option>
                   </select>
                 </div>
                 <button type="submit" class="btn btn-primary btn-block">저장</button>
