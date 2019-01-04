@@ -16,7 +16,8 @@
     <script defer src="/__/firebase/init.js"></script>
   
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <link href="styles/main.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="styles/main.css">
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
   </head>
 
   <body>
@@ -29,9 +30,9 @@
               <h2>던전월드</h2>
             </div>
           </div>
-          <div class="panel panel-default">
-            <div class="panel-body">
-              <form class="form">
+          <form class="form">
+            <div class="panel panel-default">
+              <div class="panel-body">
                 <div class="form-group">
                   <label for="name">이름</label>
                   <input type="text" class="form-control" id="name" required>
@@ -59,8 +60,8 @@
                 </div>
                 <div class="form-group">
                   <label for="class">직업</label>
-                  <select class="form-control" id="class" required onchange="updateRace()">
-                    <option selected disabled>직업을 선택하세요!</option>
+                  <select class="form-control" id="class" required>
+                    <option selected disabled value="">직업을 선택하세요!</option>
                     <option value="thief">도적</option>
                     <option value="druid">드루이드</option>
                     <option value="wizard">마법사</option>
@@ -74,17 +75,41 @@
                 <div class="form-group">
                   <label for="class">종족</label>
                   <select class="form-control" id="race" required>
-                    <option selected disabled>종족을 선택하세요!</option>
-                    <option value="elf">엘프</option>
-                    <option value="human">인간</option>
-                    <option value="halfling">하플링</option>
-                    <option value="dwarf">드워프</option>
+                    <option selected disabled value="">직업부터 선택하세요!</option>
                   </select>
                 </div>
-                <button type="submit" class="btn btn-primary btn-block">저장</button>
-              </form>
+              </div>
             </div>
-          </div>
+            <div class="panel panel-default">
+              <div class="panel-body">
+                <div class="form-group form-inline">
+                  <label for="level">레벨</label>
+                  <input type="number" class="form-control compact" id="level" min=1 max=10 value=1 style="width: 70px;" required>
+                  <label for="exp">경험치</label>
+                  <input type="number" class="form-control compact" id="exp" min=0 value=0 style="width: 70px;" required>
+                </div>
+                <div class="form-group">
+                  <label for="str">근력</label>
+                  <input type="number" class="form-control compact" id="str" min=1 max=18 style="width: 70px;" required>
+                  <label for="dex">민첩성</label>
+                  <input type="number" class="form-control compact" id="dex" min=1 max=18 style="width: 70px;" required>
+                  <label for="con">체력</label>
+                  <input type="number" class="form-control compact" id="con" min=1 max=18 style="width: 70px;" required>
+                  <label for="int">지능</label>
+                  <input type="number" class="form-control compact" id="int" min=1 max=18 style="width: 70px;" required>
+                  <label for="wis">지혜</label>
+                  <input type="number" class="form-control compact" id="wis" min=1 max=18 style="width: 70px;" required>
+                  <label for="cha">매력</label>
+                  <input type="number" class="form-control compact" id="cha" min=1 max=18 style="width: 70px;" required>
+                </div>
+              </div>
+            </div>
+            <div class="panel panel-default">
+              <div class="panel-body">
+                <button type="submit" class="btn btn-primary btn-block">저장</button>
+              </div>
+            </div>
+          </form>
         </div>
       </div>
       <footer id="load">Firebase SDK Loading&hellip;</footer>
@@ -110,6 +135,22 @@
           console.error(e);
           document.getElementById('load').innerHTML = 'Error loading the Firebase SDK, check the console.';
         }
+      });
+    </script>
+    <script type="text/javascript">
+      $(function() {
+        // 종족 선택 업데이트
+        $('#class').change(function() {
+          $('#race').empty().append('<option selected disabled value="">종족을 선택하세요!</option>')
+          var cls = $(this).val();
+          if(cls == 'cleric' || cls == 'fighter')
+            $('#race').append('<option value="dwarf">드워프</option>');
+          if(cls == 'druid' || cls == 'wizard' || cls == 'ranger' || cls == 'bard' || cls == 'fighter')
+            $('#race').append('<option value="elf">엘프</option>');
+          $('#race').append('<option value="human">인간</option>');
+          if(cls == 'thief' || cls == 'druid' || cls == 'fighter')
+            $('#race').append('<option value="halfling">하플링</option>');
+        });
       });
     </script>
   </body>
