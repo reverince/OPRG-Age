@@ -73,11 +73,26 @@
                   </select>
                 </div>
                 <div class="form-group">
-                  <label for="class">종족</label>
+                  <label for="race">종족</label>
                   <select class="form-control" id="race" required>
                     <option selected disabled value="">직업부터 선택하세요!</option>
                   </select>
                 </div>
+                <div class="form-group">
+                  <label for="alignment">가치관</label>
+                  <span id="alignment-desc">???</span>
+                   <select class="form-control" id="alignment" required>
+                    <option selected disabled value="">가치관을 선택하세요!</option>
+                    <option value=""></option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="mainAction">핵심 액션</label>
+                  <select class="form-control" id="mainAction" required>
+                    <option selected disabled value="">직업부터 선택하세요!</option>
+                  </select>
+                </div>
+                
               </div>
             </div>
             <div class="panel panel-default">
@@ -87,6 +102,8 @@
                   <input type="number" class="form-control compact" id="level" min=1 max=10 value=1 style="width: 70px;" required>
                   <label for="exp">경험치</label>
                   <input type="number" class="form-control compact" id="exp" min=0 value=0 style="width: 70px;" required>
+                  <label>최대 HP</label>
+                  <b><span id="max-hp">?</span></b> (= <span id="cls-hp">?</span> + <span id="con-hp">?</span>)
                 </div>
                 <div class="form-group">
                   <label for="str">근력 (<span id="str-bonus">+0</span>)</label>
@@ -101,6 +118,20 @@
                   <input type="number" class="form-control compact" id="wis" min=1 max=18 style="width: 70px;" required>
                   <label for="cha">매력 (<span id="cha-bonus">+0</span>)</label>
                   <input type="number" class="form-control compact" id="cha" min=1 max=18 style="width: 70px;" required>
+                </div>
+              </div>
+            </div>
+            <div class="panel panel-default">
+              <div class="panel-body">
+                <div class="form-group">
+                  <label>하중</label>
+                  <b><span id="max-weight">?</span></b> (= <span id="cls-weight">?</span> + <span id="str-weight">?</span>)
+                </div>
+                <div class="form-group">
+                  <label for="item">장비</label>
+                  <select class="form-control" id="item" required>
+                    <option selected disabled value="">직업부터 선택하세요!</option>
+                  </select>
                 </div>
               </div>
             </div>
@@ -139,10 +170,12 @@
     </script>
     <script type="text/javascript">
       $(function() {
-        // 종족 선택 업데이트
+        // 종족 선택 & 가치관 업데이트
         $('#class').change(function() {
-          $('#race').empty().append('<option selected disabled value="">종족을 선택하세요!</option>')
+          $('#race').empty().append('<option selected disabled value="">종족을 선택하세요!</option>');
+          $('#alignment').empty().append('<option selected disabled value="">가치관을 선택하세요!</option>');
           var cls = $(this).val();
+          // 종족 선택 업데이트
           if(cls == 'cleric' || cls == 'fighter')
             $('#race').append('<option value="dwarf">드워프</option>');
           if(cls == 'druid' || cls == 'wizard' || cls == 'ranger' || cls == 'bard' || cls == 'fighter')
@@ -150,7 +183,79 @@
           $('#race').append('<option value="human">인간</option>');
           if(cls == 'thief' || cls == 'druid' || cls == 'fighter')
             $('#race').append('<option value="halfling">하플링</option>');
+          // 가치관 업데이트
+          if(cls == 'thief')
+            $('#alignment')
+              .append('<option value="evil">악</option>')
+              .append('<option value="neutral">중립</option>')
+              .append('<option value="chaotic">혼돈</option>');
+          else if(cls == 'druid' || cls == 'ranger' || cls == 'bard')
+            $('#alignment')
+              .append('<option value="good">선</option>')
+              .append('<option value="neutral">중립</option>')
+              .append('<option value="chaotic">혼돈</option>');
+          else if(cls == 'wizard' || cls == 'fighter')
+            $('#alignment')
+              .append('<option value="good">선</option>')
+              .append('<option value="evil">악</option>')
+              .append('<option value="neutral">중립</option>');
+          else if(cls == 'cleric')
+            $('#alignment')
+              .append('<option value="good">선</option>')
+              .append('<option value="evil">악</option>')
+              .append('<option value="lawful">질서</option>');
+          else if(cls == 'paladin')
+            $('#alignment')
+              .append('<option value="good">선</option>')
+              .append('<option value="lawful">질서</option>');
         });
+        // 가치관 설명 업데이트
+        $('#alignment').change(function() {
+          var cls = $('#class').val();
+          var algn = $(this).val();
+          var desc;
+          if(cls == 'thief') {
+            if(algn == 'chaotic') desc = '아무 계획 없이 위험한 상황에 뛰어듭니다.';
+            else if(algn == 'neutral') desc = '들키지 않고 움직이거나 어느 장소에 침투합니다.';
+            else if(algn == 'evil') desc = '자기에게 처한 위험이나 자기의 잘못을 남에게 전가합니다.';
+          }
+          else if(cls == 'druid') {
+            if(algn == 'chaotic') desc = '문명의 상징물을 파괴합니다.';
+            else if(algn == 'good') desc = '무언가, 또는 누군가의 성장을 돕습니다.';
+            else if(algn == 'neutral') desc = '자연의 섭리에 어긋나는 위험한 것을 제거합니다.';
+          }
+          else if(cls == 'wizard') {
+            if(algn == 'good') desc = '마법을 이용하여 다른 사람을 직접적으로 돕습니다.';
+            else if(algn == 'neutral') desc = '마법적 수수께끼에 관한 사실을 밝혀냅니다.';
+            else if(algn == 'evil') desc = '마법을 이용하여 공포와 혼란을 일으킵니다.';
+          }
+          else if(cls == 'ranger') {
+            if(algn == 'chaotic') desc = '누군가를 물리적, 정신적, 사회적 속박으로부터 풀어줍니다.';
+            else if(algn == 'good') desc = '자연의 섭리에 어긋나는 위험한 것과 싸우기 위해 스스로를 위험에 빠뜨립니다.';
+            else if(algn == 'neutral') desc = '야생의 영, 또는 동물을 도와줍니다.';
+          }
+          else if(cls == 'cleric') {
+            if(algn == 'good') desc = '남을 치유하기 위해 스스로를 위험에 빠뜨립니다.';
+            else if(algn == 'lawful') desc = '교회의 교리나 신의 가르침을 따르기 위해 스스로를 위험에 빠뜨립니다.';
+            else if(algn == 'evil') desc = '남을 해침으로써 자기의 교회나 신의 우월함을 증명합니다.';
+          }
+          else if(cls == 'paladin') {
+            if(algn == 'good') desc = '자기보다 약한 자를 보호하기 위해 스스로를 위험에 빠뜨립니다.';
+            else if(algn == 'lawful') desc = '불신자나 범죄자에게 자비를 거부합니다.';
+          }
+          else if(cls == 'bard') {
+            if(algn == 'chaotic') desc = '남들이 즉석에서 계획에 없던 중요한 결단을 내리도록 충동질합니다.';
+            else if(algn == 'good') desc = '음유시인의 재주를 써서 남을 돕습니다.';
+            else if(algn == 'neutral') desc = '대립을 피하거나, 민감한 상황을 해소합니다.';
+          }
+          else if(cls == 'fighter') {
+            if(algn == 'good') desc = '자기보다 약한 자를 보호합니다.';
+            else if(algn == 'neutral') desc = '강한 상대를 쓰러뜨립니다.';
+            else if(algn == 'evil') desc = '항복했거나 저항하지 못하는 적을 죽입니다.';
+          }
+          $('#alignment-desc').text(desc);
+        });
+        // 능력치 보너스 업데이트
         $('#str, #dex, #con, #int, #wis, #cha').change(function() {
           var val = parseInt($(this).val());
           var stat = $(this).attr('id');
@@ -162,6 +267,44 @@
           else if(val < 16) bonus.innerHTML = '+1';
           else if(val < 18) bonus.innerHTML = '+2';
           else if(val < 19) bonus.innerHTML = '+3';
+        });
+        // 최대 체력 업데이트
+        $('#class, #con').change(function() {
+          var atr = $(this).attr('id');
+          if(atr == 'class') {
+            var clsHp = 0;
+            var cls = $(this).val();
+            if(cls == 'thief' || cls == 'druid' || cls == 'bard') clsHp = 6;
+            else if(cls == 'wizard') clsHp = 4;
+            else if(cls == 'ranger' || cls == 'cleric') clsHp = 8;
+            else if(cls == 'paladin' || cls == 'fighter') clsHp = 10;
+            document.getElementById('cls-hp').innerHTML = clsHp;
+          }
+          else if(atr == 'con') {
+            document.getElementById('con-hp').innerHTML = $(this).val();
+          }
+          $('#max-hp').text(parseInt($('#cls-hp').text()) + parseInt($('#con-hp').text()));
+          if($('#max-hp').text() == 'NaN') $('#max-hp').text('?');
+        });
+        // 하중 업데이트
+        $('#class, #str').change(function() {
+          var atr = $(this).attr('id');
+          if(atr == 'class') {
+            var clsWeight = 0;
+            var cls = $(this).val();
+            if(cls == 'thief' || cls == 'bard') clsWeight = 9;
+            else if(cls == 'druid') clsWeight = 6;
+            else if(cls == 'wizard') clsWeight = 7;
+            else if(cls == 'ranger') clsWeight = 11;
+            else if(cls == 'cleric') clsWeight = 10;
+            else if(cls == 'paladin' || cls == 'fighter') clsWeight = 12;
+            document.getElementById('cls-weight').innerHTML = clsWeight;
+          }
+          else if(atr == 'str') {
+            document.getElementById('str-weight').innerHTML = $(this).val();
+          }
+          $('#max-weight').text(parseInt($('#cls-weight').text()) + parseInt($('#str-weight').text()));
+          if($('#max-weight').text() == 'NaN') $('#max-weight').text('?');
         });
       });
     </script>
